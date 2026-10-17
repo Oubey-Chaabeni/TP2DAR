@@ -12,7 +12,7 @@ public class client{
     public static void main (String[] args) throws IOException{
 
         Scanner stScanner = new Scanner(System.in);
-        Scanner iScanner = new Scanner(System.in);
+        Scanner intScanner = new Scanner(System.in);
 
 
         System.out.println("Client is Trying to connect to the server...");
@@ -51,11 +51,13 @@ public class client{
 
 
             System.out.print("\nDo you like to continue (1:yes/0:no) : ");
-            cont = iScanner.nextInt();
+            cont = intScanner.nextInt();
             STS.writeInt(cont);
         }
         socket.close();        
         stScanner.close();
+        intScanner.close();
+        
     }
     
 }
