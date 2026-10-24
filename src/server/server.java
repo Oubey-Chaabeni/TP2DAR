@@ -1,18 +1,18 @@
 package server;
 
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+
+import common.Calcul;
 
 public class server {
     
-    public static void main (String[] args) throws IOException{
+    public static void main (String[] args) throws IOException, ClassNotFoundException{
 
         ServerSocket serversocket = new ServerSocket(1234);
         System.out.println("Socket is onlin. Waiting fort clients on port 1234...");
@@ -22,25 +22,16 @@ public class server {
 
         DataOutputStream STC = new DataOutputStream(socket.getOutputStream());
         DataInputStream RFC = new DataInputStream(socket.getInputStream());
-        BufferedReader RBFC = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        ObjectInputStream OIS = new ObjectInputStream(socket.getInputStream());
         int cont = 1;
 
         while(cont == 1){
 
-            String operation = RBFC.readLine();
+            Calcul calcul = (Calcul) OIS.readObject();
             double result = 0;
-            int num1=0;
-            char operator='+';
-            int num2= 0;
-
-            Pattern pattern = Pattern.compile("(\\d+)([+\\-*/])(\\d+)");
-            Matcher matcher = pattern.matcher(operation);
-
-            if(matcher.matches()){
-            num1 = Integer.parseInt(matcher.group(1));
-            operator = matcher.group(2).charAt(0);
-            num2 = Integer.parseInt(matcher.group(3));
-            }
+            int num1 = calcul.getNum1();
+            char operator = calcul.getOperator();
+            int num2 = calcul.getNum2();
 
             System.out.println("Client sent "+num1+" "+operator+" "+num2+" to be calculated. Calculating result....");
 

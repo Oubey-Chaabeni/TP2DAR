@@ -3,9 +3,13 @@ package client;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import common.Calcul;
 
 public class client{
 
@@ -22,7 +26,7 @@ public class client{
 
         DataOutputStream STS = new DataOutputStream(socket.getOutputStream());
         DataInputStream RFS = new DataInputStream(socket.getInputStream());
-        PrintWriter SBTS = new PrintWriter(socket.getOutputStream(), true);
+        ObjectOutputStream OOS = new ObjectOutputStream(socket.getOutputStream());
         int cont = 1;
 
         while(cont == 1){
@@ -43,7 +47,11 @@ public class client{
                 }
 
             }while (validateFormat == false);
-            SBTS.println(operation);
+            Matcher matcher = Pattern.compile("(\\d+)([+\\-*/])(\\d+)").matcher(operation);
+            matcher.matches();
+            Calcul calcul = new Calcul(Integer.parseInt(matcher.group(1)), matcher.group(2).charAt(0), Integer.parseInt(matcher.group(3)));
+            OOS.writeObject(calcul);
+            OOS.flush();
 
             double result = RFS.readDouble();
             System.out.println("The result of the operation sent is "+result);
